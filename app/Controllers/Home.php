@@ -22,6 +22,9 @@ class Home extends BaseController
         if($this->request->getMethod() === "post"){
             $data = $this->request->getVar();
         }
+
+
+        return redirect()->to('/success');
     }
 
 
