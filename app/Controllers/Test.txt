@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Controllers\BaseController;
+use App\Models\AuditTrailModel;
+
+class AuditController extends BaseController
+{
+    public function saveLog()
+    {
+        // 1. Get data from the HTML Form
+        // Laravel style: $request->in_out; (DO NOT USE)
+        // CI4 style:
+        $inOutType = $this->request->getPost('in_out'); // e.g., "Time In" or "Time Out"
+        $remarks   = $this->request->getPost('remarks');
+
+        // 2. Get the current user (assuming you store user info in Session)
+        $currentUser = session()->get('username') ?? 'Guest';
+
+        // 3. Prepare the data for the database
+        // In CI4, we use an associative array, not an object.
+        $dataToSave = [
+            'from_user'   => $currentUser,
+            'action'      => $inOutType,          // This comes from the form
+            'time_logged' => date('Y-m-d H:i:s'), // Current time
+            'details'     => $remarks             // This comes from the form
+        ];
+
+        // 4. Save to Database
+        $auditModel = new AuditTrailModel();
+        
+        // This does the INSERT automatically
+        $auditModel->save($dataToSave);
+
+        // 5. Redirect back or show success
+        return redirect()->to('/dashboard')->with('message', 'Log saved successfully!');
+    }
+}

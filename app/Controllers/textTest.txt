@@ -1,0 +1,361 @@
+1.Creating a project 
+composer create-project codeigniter4/appstarter project-name
+
+
+2. Went to env
+	-> database.default.DSN ='mysql:dbname=vue_db;host=localhost'
+	->  #CI_ENVIRONMENT = development
+	-> app.baseURL = 'http://localhost/'
+
+3. Xammpp
+	=httpd.conf
+ DocumentRoot: 'H....
+
+
+
+4. php spark serve
+5. -> Manual -is in system
+6. Created SiteController
+7.Goes to Routes.php
+
+
+
+<?php
+
+namespace App\Controllers;
+
+class Shop extends BaseController
+{
+    public function index()
+    {
+        // Simply echo text first to test if the Controller works
+        echo "The Shop Controller is working!"; 
+    }
+
+
+    public static function product($type ){
+        echo "This is: '.$type.'";
+
+        // echo view(); // Different Components
+        // echo view();
+        
+    //   return view('welcome');
+    }
+}|
+
+
+
+
+---------------------------------------------------
+
+<?php
+
+use CodeIgniter\Router\RouteCollection;
+
+/**
+ * @var RouteCollection $routes
+ */
+
+
+$routes->get('/', 'Home::index');
+// When the user visits /shop, go to the Shop Controller, index method
+//$routes->get('laptop', 'Shop::product');
+
+$routes->get('shop/(:segment)', 'Shop::product/$1');
+$routes->get('site', 'SiteController::simple');
+
+
+// Now this will ONLY work if sent via a Form or an API POST request
+// $routes->post('shop/delete/(:num)', 'Shop::delete/$1');
+// use App\Controllers\News; // Add this line
+// use App\Controllers\Pages;
+
+// $routes->get('news', [News::class, 'index']);           // Add this line
+// $routes->get('news/(:segment)', [News::class, 'show']); // Add this line
+
+// $routes->get('pages', [Pages::class, 'index']);
+// $routes->get('(:segment)', [Pages::class, 'view']);
+
+// $routes->get('(:segment)', function(){
+	echo"TangIna";
+return view ("simple-call");
+});
+
+// $routes->get('(:segment)', [Pages::class, 'view/$1']);
+// $routes->get('Amen/(:segment)', "SiteController::callme/$1");
+
+// $routes->get('/Amen', "SiteController::callme/$1");
+(:any)will match all characters from that point to the end of the URI. This may include multiple URI segments.
+
+(:segment)will match any character except for a forward slash (/) restricting the result to a single segment.
+
+(:num)will match any positive integer.
+
+(:alpha)will match any string of alphabetic characters
+
+(:alphanum)will match any string of alphabetic characters or integers, or any combination of the two.
+
+(:hash)is the same as (:segment), but can be used to easily see which routes use hashed ids.
+
+
+
+// ALIAS 
+$routes->get('post/(:num)/comment/(:num)', 'PostsComments::index', ['as' => 'post.comment']);
+
+
+
+// If user goes to this then go to this 
+// Redirect to a URI
+$routes->addRedirect('article/(:num)/(:num)', 'post/$1/comment/$2');
+
+
+//Register FIrst
+// app -> Config -> FIlters
+public $aliases = [
+    'csrf'          => \CodeIgniter\Filters\CSRF::class,
+    'toolbar'       => \CodeIgniter\Filters\DebugToolbar::class,
+    'auth'          => \App\Filters\AuthFilter::class, // Your custom guard!
+];
+
+Adding the filter 
+// Only people who pass the 'auth' filter can enter this group!
+$routes->group('admin', ['filter' => 'auth'], static function ($routes) {
+    
+    $routes->get('users', 'Admin\Users::index');
+    $routes->get('blog', 'Admin\Blog::index');
+    
+});
+
+
+//Groupings 
+$routes->group('admin', static function ($routes) {
+    $routes->get('users', 'Admin\Users::index');
+    $routes->get('blog', 'Admin\Blog::index');
+});
+
+
+
+//$values =print_r($this->request->getVar())
+	$values['Channel'];
+-------------------------------------------------------
+
+
+
+
+8. Change the base url(); so instead manually importing|
+->Controllers -> BaseController
+    protected $helpers= ["url"];
+
+Config -> App ->    public string $baseURL = 'http://localhost:8080/';
+   public string $baseURL = 'http://localhost/file/file';
+   public string $baseURL = 'http://localhost/ci-4/app2';
+<lin rel="stylesheet" href="<?= base_url('public/css/style.css')>"
+
+or
+<?= link_tag('public/css/style.css') ?>
+<?= script_tag('')?>
+
+
+
+
+
+----------------------------------------------------
+
+9. Connection to the Database
+__Construct 
+	-> $this -> db =  \Config\Database::connect();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class CreateComments extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id'          => ['type' => 'INT', 'constraint' => 5, 'unsigned' => true, 'auto_increment' => true],
+            'post_id'     => ['type' => 'INT', 'constraint' => 5, 'unsigned' => true], // Must match post.id
+            'comment'     => ['type' => 'TEXT'],
+        ]);
+
+        $this->forge->addKey('id', true);
+
+        // --- THE FOREIGN KEY PART ---
+        // 1. Field in THIS table (post_id)
+        // 2. Table it refers to (posts)
+        // 3. Field it refers to (id)
+        // 4. On Delete (RESTRICT)
+        // 5. On Update (RESTRICT)
+        $this->forge->addForeignKey('post_id', 'posts', 'id', 'RESTRICT', 'RESTRICT');
+
+        $this->forge->createTable('comments');
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('comments');
+    }
+}
+
+
+class CreateComments extends Migration
+{
+    public function up()
+    {
+        // Just write the SQL command directly!
+        $sql = "CREATE TABLE comments (
+            id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            post_id INT(5) UNSIGNED NOT NULL,
+            comment TEXT,
+            CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+        )";
+
+        $this->db->query($sql);
+    }
+
+    public function down()
+    {
+        $this->db->query("DROP TABLE IF EXISTS comments");
+    }
+}
+
+
+------------
+///SEEDERS
+<?php
+
+namespace App\Database\Seeds;
+
+use CodeIgniter\Database\Seeder;
+use Faker\Factory;
+
+class MainSeeder extends Seeder
+{
+    public function run()
+    {
+        $faker = Factory::create();
+        $password = password_hash('password123', PASSWORD_DEFAULT);
+
+        // We will loop 200 times to create 200 pairs of users
+        for ($i = 0; $i < 200; $i++) {
+            
+            // ---------------------------------------------------------
+            // STEP 1: Create the "Parent" (MC Game Account) first
+            // ---------------------------------------------------------
+            $mcData = [
+                'ign_name'   => $faker->userName . $i, // Unique name
+                'password'   => $password,
+                'email'      => "mc_{$i}_" . $faker->email,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+
+            // Insert into the parent table
+            $this->db->table('mc_users_tbl')->insert($mcData);
+            
+            // !!! CRITICAL !!! 
+            // Get the ID of the row we just created.
+            // We need this ID to fill the 'ign_game_id' column below.
+            $newID = $this->db->insertID(); 
+
+            // ---------------------------------------------------------
+            // STEP 2: Create the "Child" (Website Profile)
+            // ---------------------------------------------------------
+            $websiteData = [
+                'first_name'  => $faker->firstName,
+                'last_name'   => $faker->lastName,
+                'email'       => "web_{$i}_" . $faker->email,
+                
+                // This connects the two tables!
+                'ign_game_id' => $newID, 
+                
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+            ];
+
+            // Insert into the table from your migration
+            $this->db->table('website_users_tbl')->insert($websiteData);
+        }
+    }
+}
+
+
+
+
+----------
+Users Form 
+<form action="<?= url_to('user.create') ?>" method="post">
+    
+    <?= csrf_field() ?> <input type="text" name="username">
+    <button type="submit">Save</button>
+
+</form>
+
+
+--WITH ID
+// Targets: http://yoursite.com/users/update/5
+<form action="<?= url_to('user.update', $user['id']) ?>" method="post">
+    ...
+</form>
+
+
+<?= form_open(url_to('user.create')) ?>
+
+    <input type="text" name="username">
+    <button type="submit">Save</button>
+
+<?= form_close() ?>
+
+
+<?= form_open(url_to('user.update', $user['id'])) ?>
+
+    <input type="text" name="email" value="<?= esc($user['email']) ?>">
+    
+    <button type="submit">Update</button>
+
+<?= form_close() ?>
+
+
+
+php spark make:model User
+php spark make:migration CreateUsersTable
+php spark migrate
+php spark make:controller ControllerName
+
+
+php spark migrate:rollback
+with restfull api
+php spark make:controller User --restful
+
+
+php spark migrate -t 20260201100000
+
+php spark make:seeder MainSeeder
+ php spark db:seed WebUsers    
