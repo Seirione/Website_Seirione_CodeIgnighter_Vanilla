@@ -10,9 +10,9 @@ class Home extends BaseController
         $users_model = new UserModel();
         //fetch all / Select * From usersTable;
         $data = $users_model ->findAll();
-        dd($data);
+      
         return view('welcome_message', compact('data'));
-
+          // dd($data);
        // var_dump(compact('data'));
     }
 }

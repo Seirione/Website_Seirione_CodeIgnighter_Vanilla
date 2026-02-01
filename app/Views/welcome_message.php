@@ -203,6 +203,21 @@
 <!-- HEADER: MENU + HEROE SECTION -->
 <header>
 
+<?php if (!empty($data) && is_array($data)) : ?>
+            
+                <?php foreach ($data as $user) : ?>
+                    <tr>
+                        <td><?= esc($user['id']) ?></td>
+                        <td><?= esc($user['first_name']) ?></td>
+                        <td><?= esc($user['email']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+
+            <?php else : ?>
+                <tr>
+                    <td colspan="3">No users found.</td>
+                </tr>
+            <?php endif ?>
     <div class="menu">
         <ul>
             <li class="logo">
