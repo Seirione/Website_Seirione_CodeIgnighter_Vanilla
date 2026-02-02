@@ -358,4 +358,6 @@ php spark make:controller User --restful
 php spark migrate -t 20260201100000
 
 php spark make:seeder MainSeeder
- php spark db:seed WebUsers    
+ php spark db:seed WebUsers   
+php spark make:filter MyAuthFilter
+php spark make:filter NoCache 
