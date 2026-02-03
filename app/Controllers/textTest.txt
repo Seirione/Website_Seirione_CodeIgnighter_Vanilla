@@ -361,3 +361,5 @@ php spark make:seeder MainSeeder
  php spark db:seed WebUsers   
 php spark make:filter MyAuthFilter
 php spark make:filter NoCache 
+// Format: Controller::method
+<?= form_open(url_to('UserController::create'), "class='my_form' id='my_form'") ?>

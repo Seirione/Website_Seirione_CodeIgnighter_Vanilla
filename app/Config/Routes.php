@@ -1,13 +1,12 @@
 <?php
 
 use CodeIgniter\Router\RouteCollection;
-use app\Controllers\LoginRegister;
+use App\Controllers\LoginRegister; // Capital 'A'
 use app\Controllers\Admin;
 use app\Controllers\Guest;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
 
 
 
@@ -18,7 +17,9 @@ $routes -> group('auth', ['filter' =>'guest', 'nocache'], static function($route
 });
 
 
-$routes->get('login', [LoginRegister::class, 'login']);
+$routes->post('login_process', 'LoginRegister::login_process_test2', ['as' => 'll']);
+$routes->get('login', 'LoginRegister::login');
+$routes->post('login2', 'LoginRegister::login2');
 $routes->get('register', [LoginRegister::class, 'register']);
 
 

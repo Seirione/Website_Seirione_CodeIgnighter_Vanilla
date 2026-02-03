@@ -1,5 +1,8 @@
 <?php
-
+// echo "Current URL: " . $_SERVER['REQUEST_URI'];
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     die(" POST Data received at index.php!");
+// }
 use CodeIgniter\Boot;
 use Config\Paths;
 

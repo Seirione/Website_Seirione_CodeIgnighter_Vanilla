@@ -10,18 +10,32 @@ class LoginRegister extends BaseController
     // 1. Show the Login Page
     public function login()
     {
-        // If already logged in, redirect them away (uses your 'guest' filter logic manually here just in case)
-        if (session()->get('isLoggedIn')) {
-            return (session()->get('user_type') == 1) 
-                ? redirect()->to('/admin/dashboard') 
-                : redirect()->to('/auth/dashboard');
-        }
+        //session()->destroy();
+        // // If already logged in, redirect them away (uses your 'guest' filter logic manually here just in case)
+        // if (session()->get('isLoggedIn')) {
+        //     return (session()->get('user_type') == 1) 
+        //         ? redirect()->to('/admin/dashboard') 
+        //         : redirect()->to('/auth/dashboard');
+        // }
 
-        return view('auth/login'); // Load your login view file
+        return view('Login'); // Load your login view file
     }
 
+     public function login2()
+    {
+        //session()->destroy();
+        // // If already logged in, redirect them away (uses your 'guest' filter logic manually here just in case)
+        // if (session()->get('isLoggedIn')) {
+        //     return (session()->get('user_type') == 1) 
+        //         ? redirect()->to('/admin/dashboard') 
+        //         : redirect()->to('/auth/dashboard');
+        // }
+
+       return 'hello';
+    }
+  
     // 2. Process the Form Submission (The "Action")
-    public function attemptLogin()
+    public function login_process()
     {
         $session = session();
         $model   = new UserModel();
@@ -67,6 +81,19 @@ class LoginRegister extends BaseController
     
     public function register()
     {
-        return view('auth/register');
+        return view('register');
+    }
+
+    public function login_process_test2(){
+
+    ECHO  'ADASDSAD';
+        // 1. Get a single field by its "name" attribute
+        $username = $this->request->getPost('txt_name');
+        $password = $this->request->getPost('txt_password');
+
+        // 2. OR get everything as an associative array
+        $allData = $this->request->getPost();
+
+       
     }
 }
